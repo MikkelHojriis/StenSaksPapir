@@ -2,15 +2,32 @@
 #include <stdlib.h>
 #include <time.h> // Inkludér time.h for at generere tilfældige tal ved brug af tid
 
-int main() {
-    // Generer et tilfældigt tal ved brug af tid.
-    srand(time(0));
-
     int choice; //Lav Int for ens eget valg
     int computerChoice; //Lav Int for computerens valg
     int computerPoint = 0;
     int spillerPoint = 0;
     int uafgjort = 0;
+
+    void loadScore() {
+        FILE * file = fopen("scores.txt", "r");
+            if (file != NULL) {
+                fscanf(file, "%d %d %d", & spillerPoint, & computerPoint, & uafgjort);
+                fclose(file);
+   }
+}
+
+    void saveScore() {
+        FILE * file = fopen("scores.txt", "w");
+            if (file != NULL) {
+                fprintf(file, "%d %d %d", spillerPoint, computerPoint, uafgjort);
+                fclose(file);
+   }
+}
+
+int main() {
+    // Generer et tilfældigt tal ved brug af tid.
+    srand(time(0));
+    loadScore();
 
     while (1) { //Lav menu
         printf("-----------------------\n");
@@ -18,6 +35,7 @@ int main() {
         printf("1. Sten\n");
         printf("2. Saks\n");
         printf("3. Papir\n");
+        printf("9. Nulstil point\n");
         printf("0. Afslut spillet\n\n");
         printf("Spiller point: %d\n", spillerPoint);
         printf("Computer point: %d\n", computerPoint);
@@ -26,8 +44,16 @@ int main() {
         // Få brugerens valg
         scanf("%d", &choice);
 
+        if (choice == 9) {
+            computerPoint = 0;
+            spillerPoint = 0;
+            uafgjort = 0;
+        printf("Point nulstilling succesfuld!");
+        }
+
         if (choice == 0) {
-            printf("Spillet afsluttet. Farvel!\n\n");
+            printf("Spillet afsluttes. Farvel!\n\n");
+            saveScore();
                 if (spillerPoint>computerPoint)
                 {   printf("-----------------------\n");
                     printf("SPILLEREN VANDT!\n");
@@ -82,13 +108,6 @@ int main() {
             } else {
                 printf("Computeren vinder!\n\n");
                 computerPoint++;
-            }
-        }
-    }
-
-    return 0;
-}
-
             }
         }
     }
